@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Classifier</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .preview-image { max-height: 400px; object-fit: contain; }
+        .prediction-card { transition: transform 0.2s; }
+        .prediction-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4 text-center">Классификатор изображений</h1>
+
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Выберите модель:</label>
+                        <select name="model" class="form-select">
+                            <option value="mobilenet">MobileNetV2</option>
+                            <option value="resnet">ResNet50</option>
+                            <option value="vgg">VGG16</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="file" name="file" class="form-control" accept=".png,.jpg,.jpeg,.bmp">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Анализировать</button>
+                </form>
+            </div>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-danger mt-4">{{ error }}</div>
+        {% endif %}
+
+        {% if predictions %}
+            <div class="card mt-4 shadow">
+                <div class="card-body">
+                    <h4>Результаты ({{ model }}):</h4>
+                    {% if image_url %}
+                        <img src="{{ image_url }}" class="img-fluid rounded mt-3 preview-image">
+                    {% endif %}
+
+                    <div class="row mt-4">
+                        {% for label, prob in predictions %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card prediction-card">
+                                    <div class="card-body">
+                                        <h5>{{ label }}</h5>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar"
+                                                 style="width: {{ prob*100 }}%">
+                                                {{ "%.2f"|format(prob*100) }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <button onclick="saveResults()" class="btn btn-outline-secondary mt-3">
+                        Сохранить результаты
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function saveResults() {
+            const data = `Результаты классификации ({{ model }}):\n
+                {% for label, prob in predictions %}
+                    {{ label }}: {{ "%.2f"|format(prob*100) }}%\n
+                {% endfor %}`;
+
+            const encoded = encodeURIComponent(data);
+            window.location.href = `/save?data=${encoded}`;
+        }
+    </script>
+</body>
+</html>
