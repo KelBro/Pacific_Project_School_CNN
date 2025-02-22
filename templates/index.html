@@ -1,23 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ session.get('lang', 'ru') }}">
 <head>
-    <title>Image Classifier</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ tr.title }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         .preview-image { max-height: 400px; object-fit: contain; }
         .prediction-card { transition: transform 0.2s; }
         .prediction-card:hover { transform: translateY(-5px); }
+        .language-switcher { position: absolute; top: 20px; right: 20px; width: 150px; }
     </style>
 </head>
 <body class="bg-light">
     <div class="container py-5">
-        <h1 class="mb-4 text-center">Классификатор изображений</h1>
+        <div class="language-switcher">
+            <select class="form-select" onchange="window.location.href = `?lang=${this.value}`">
+                <option value="ru" {% if session.get('lang', 'ru') == 'ru' %}selected{% endif %}>Русский</option>
+                <option value="en" {% if session.get('lang', 'ru') == 'en' %}selected{% endif %}>English</option>
+            </select>
+        </div>
+
+        <h1 class="mb-4 text-center">{{ tr.title }}</h1>
 
         <div class="card shadow">
             <div class="card-body">
                 <form method="post" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label class="form-label">Выберите модель:</label>
+                        <label class="form-label">{{ tr.select_model }}</label>
                         <select name="model" class="form-select">
                             <option value="mobilenet">MobileNetV2</option>
                             <option value="resnet">ResNet50</option>
@@ -26,10 +36,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <input type="file" name="file" class="form-control" accept=".png,.jpg,.jpeg,.bmp">
+                        <input type="file" name="file" class="form-control" accept=".png,.jpg,.jpeg,.bmp" required>
+                        <div class="form-text">{{ tr.choose_file }}</div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Анализировать</button>
+                    <button type="submit" class="btn btn-primary w-100">{{ tr.analyze }}</button>
                 </form>
             </div>
         </div>
@@ -41,9 +52,11 @@
         {% if predictions %}
             <div class="card mt-4 shadow">
                 <div class="card-body">
-                    <h4>Результаты ({{ model }}):</h4>
+                    <h4>{{ tr.results|format(model=model) }}</h4>
                     {% if image_url %}
-                        <img src="{{ image_url }}" class="img-fluid rounded mt-3 preview-image">
+                        <img src="{{ url_for('static', filename='uploads/' + image_url) }}"
+                             class="img-fluid rounded mt-3 preview-image"
+                             alt="Uploaded image">
                     {% endif %}
 
                     <div class="row mt-4">
@@ -65,7 +78,7 @@
                     </div>
 
                     <button onclick="saveResults()" class="btn btn-outline-secondary mt-3">
-                        Сохранить результаты
+                        {{ tr.save_results }}
                     </button>
                 </div>
             </div>
@@ -74,7 +87,7 @@
 
     <script>
         function saveResults() {
-            const data = `Результаты классификации ({{ model }}):\n
+            const data = `{{ tr.results|format(model=model) }}\n
                 {% for label, prob in predictions %}
                     {{ label }}: {{ "%.2f"|format(prob*100) }}%\n
                 {% endfor %}`;
