@@ -1,12 +1,4 @@
-from flask import Flask, render_template, request, send_file, session, url_for
-from PIL import Image
-import torch
-import torchvision.models as models
-import os
-from datetime import datetime
-from functools import lru_cache
-import logging
-from logging.handlers import RotatingFileHandler
+from libraries import *
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -16,48 +8,13 @@ app.config.update({
     'MAX_FILE_SIZE': 16 * 1024 * 1024,
 })
 
-# Настройка логирования
 if not app.debug:
     file_handler = RotatingFileHandler('app.log', maxBytes=1024 * 1024)
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
 
-# Словарь переводов
-TRANSLATIONS = {
-    'en': {
-        'title': 'Image Classifier',
-        'select_model': 'Select model:',
-        'choose_file': 'Choose file',
-        'analyze': 'Analyze',
-        'error_invalid_model': 'Invalid model',
-        'error_no_file': 'No file selected',
-        'error_unsupported_format': 'Unsupported format',
-        'error_file_too_big': 'File too large (max 16MB)',
-        'error_processing': 'Image processing error',
-        'error_low_confidence': 'Low recognition confidence',
-        'results': 'Results ({model}):',
-        'save_results': 'Save results',
-        'language': 'Language',
-        'internal_error': 'Internal server error'
-    },
-    'ru': {
-        'title': 'Классификатор изображений',
-        'select_model': 'Выберите модель:',
-        'choose_file': 'Выберите файл',
-        'analyze': 'Анализировать',
-        'error_invalid_model': 'Неверная модель',
-        'error_no_file': 'Файл не выбран',
-        'error_unsupported_format': 'Неподдерживаемый формат',
-        'error_file_too_big': 'Файл слишком большой (макс. 16MB)',
-        'error_processing': 'Ошибка обработки изображения',
-        'error_low_confidence': 'Низкая уверенность распознавания',
-        'results': 'Результаты ({model}):',
-        'save_results': 'Сохранить результаты',
-        'language': 'Язык',
-        'internal_error': 'Внутренняя ошибка сервера'
-    }
-}
+TRANSLATIONS = json.load(open("translate.json", encoding="utf-8"))
 
 
 def get_translations(lang='ru'):
@@ -75,7 +32,6 @@ def load_model(model_name):
     return model_class(weights=weights), weights
 
 
-# Инициализация моделей при старте приложения
 with app.app_context():
     app.config['MODELS'] = {name: load_model(name)[0] for name in ['mobilenet', 'resnet', 'vgg']}
     app.config['MODEL_METAS'] = {name: load_model(name)[1] for name in ['mobilenet', 'resnet', 'vgg']}
