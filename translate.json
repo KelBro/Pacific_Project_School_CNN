@@ -10,10 +10,12 @@
         "error_file_too_big": "File too large (max 16MB)",
         "error_processing": "Image processing error",
         "error_low_confidence": "Low recognition confidence",
-        "results": "Results ({model}):",
+        "results": "Results:",
         "save_results": "Save results",
         "language": "Language",
-        "internal_error": "Internal server error"
+        "internal_error": "Internal server error",
+        "choose_file_hint": "Supported formats: .png, .jpg, .jpeg, .bmp",
+        "file_selected": "Selected file:"
     },
     "ru": {
         "title": "Классификатор изображений",
@@ -26,9 +28,11 @@
         "error_file_too_big": "Файл слишком большой (макс. 16MB)",
         "error_processing": "Ошибка обработки изображения",
         "error_low_confidence": "Низкая уверенность распознавания",
-        "results": "Результаты ({model}):",
+        "results": "Результаты:",
         "save_results": "Сохранить результаты",
         "language": "Язык",
-        "internal_error": "Внутренняя ошибка сервера"
+        "internal_error": "Внутренняя ошибка сервера",
+        "choose_file_hint": "Поддерживаемые форматы: .png, .jpg, .jpeg, .bmp",
+        "file_selected": "Выбран файл:"
     }
 }

@@ -14,6 +14,8 @@
 </head>
 <body class="bg-light">
     <div class="container py-5">
+        <div id="fileSelectedText" class="d-none">{{ tr.file_selected }}</div>
+
         <div class="language-switcher">
             <select class="form-select" onchange="window.location.href = `?lang=${this.value}`">
                 <option value="ru" {% if session.get('lang', 'ru') == 'ru' %}selected{% endif %}>Русский</option>
@@ -36,8 +38,12 @@
                     </div>
 
                     <div class="mb-3">
-                        <input type="file" name="file" class="form-control" accept=".png,.jpg,.jpeg,.bmp" required>
-                        <div class="form-text">{{ tr.choose_file }}</div>
+                        <input type="file" name="file" id="fileInput" class="d-none" accept=".png,.jpg,.jpeg,.bmp" required>
+                        <label for="fileInput" class="btn btn-secondary w-100">
+                            {{ tr.choose_file }}
+                        </label>
+                        <div id="fileNameDisplay" class="form-text mt-2"></div>
+                        <div class="form-text">{{ tr.choose_file_hint }}</div>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">{{ tr.analyze }}</button>
@@ -86,6 +92,18 @@
     </div>
 
     <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            const file = event.target.files[0];
+            const fileSelectedText = document.getElementById('fileSelectedText').textContent;
+
+            if (file) {
+                fileNameDisplay.textContent = `${fileSelectedText} ${file.name}`;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+
         function saveResults() {
             const data = `{{ tr.results|format(model=model) }}\n
                 {% for label, prob in predictions %}
