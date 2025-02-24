@@ -1,0 +1,34 @@
+{
+    "en": {
+        "title": "Image Classifier",
+        "select_model": "Select model:",
+        "choose_file": "Choose file",
+        "analyze": "Analyze",
+        "error_invalid_model": "Invalid model",
+        "error_no_file": "No file selected",
+        "error_unsupported_format": "Unsupported format",
+        "error_file_too_big": "File too large (max 16MB)",
+        "error_processing": "Image processing error",
+        "error_low_confidence": "Low recognition confidence",
+        "results": "Results ({model}):",
+        "save_results": "Save results",
+        "language": "Language",
+        "internal_error": "Internal server error"
+    },
+    "ru": {
+        "title": "Классификатор изображений",
+        "select_model": "Выберите модель:",
+        "choose_file": "Выберите файл",
+        "analyze": "Анализировать",
+        "error_invalid_model": "Неверная модель",
+        "error_no_file": "Файл не выбран",
+        "error_unsupported_format": "Неподдерживаемый формат",
+        "error_file_too_big": "Файл слишком большой (макс. 16MB)",
+        "error_processing": "Ошибка обработки изображения",
+        "error_low_confidence": "Низкая уверенность распознавания",
+        "results": "Результаты ({model}):",
+        "save_results": "Сохранить результаты",
+        "language": "Язык",
+        "internal_error": "Внутренняя ошибка сервера"
+    }
+}
